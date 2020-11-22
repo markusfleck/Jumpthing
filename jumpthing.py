@@ -26,7 +26,7 @@ bones_d = torch.tensor( [ [ v[0], v[1] ] for v in bones.values() ], dtype=torch.
 # get the corresponding incices in coords_d for the bones endpoint nodes
 bones_indices_d = torch.tensor( [ [ list(coords.keys()).index(i[0]), list(coords.keys()).index(i[1]) ] for i in bones.keys() ], dtype=torch.int16 ).to(device) 
 
-# this tensor contains the force constants and equilibrium values of the muscles in flexed and tensed state. muscles is an OrderedDict, so the identity is preserved by the order
+# this tensor contains the force constants and equilibrium values of the muscles in flexed and contracted state. muscles is an OrderedDict, so the identity is preserved by the order
 muscles_d = torch.tensor( [ [ v[0], v[1], v[2], v[3] ] for v in muscles.values() ], dtype=torch.float32 ).to(device) 
 
 # get the corresponding incices in coords_d for the muscle endpoint nodes

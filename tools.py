@@ -34,7 +34,7 @@ def parse_animal(file):
                 if(len(line.split()) == 6): # check if there are 6 columns
                     split = line.split() # split the 6 columns to a list
                     muscles[(split[0],split[1])] = (float(split[2]),float(split[3]),float(split[4]),float(split[5])) # the muscle connecting node split[0] to split[1] 
-                    # has force constant split[2] and equilibrium length split[3] when flexed and force constant split[4] and equilibrium length split[5] when tensed    
+                    # has force constant split[2] and equilibrium length split[3] when flexed and force constant split[4] and equilibrium length split[5] when contracted    
                     muscle_connects[split[0]].add(split[1]) # split[0] is connected via a muscle to split[1]
                     muscle_connects[split[1]].add(split[0]) # vice versa, split[1] is connected via a muscle to split[0]
             
@@ -95,7 +95,7 @@ def energy(device, coords, bones, bones_indices, muscles, flexes, muscles_indice
         i+=1 # increase the counter
     
     # get the total energy of the bones as a sum of the Hook's law [E = (x - x0)**2 * K/2, x0 == equilibrium length, K/2 == force constant] energies of all muscles
-    # flexes[:,0] + flexes[:,1] == 1 specifies the amount of muscle tension: the first term in the sum gives the energy due to the flexed amount, the second due to the tensed amount
+    # flexes[:,0] + flexes[:,1] == 1 specifies the amount of muscle tension: the first term in the sum gives the energy due to the flexed amount, the second due to the contracted amount
     energy += torch.sum( (dists-muscles[:,1])**2 *muscles[:,0] * flexes[:,0] + (dists-muscles[:,3])**2 * muscles[:,2] * flexes[:,1])
     
     return energy # return the energy
@@ -241,7 +241,7 @@ def watch_simulation(device, coords, bones, bones_indices, muscles, flexes, musc
             # transfrom the coords_print from units of percent of the canvas to actual pixel values            
             coords_print = [ [int( i[0] / 100.0 * world.CANVAS_X + 0.5 ), world.CANVAS_Y - int( i[1] / 100.0 * world.CANVAS_Y + 0.5)] for i in coords]
             
-            # apply the ai agents policy, i. e. tense/flex the muscles
+            # apply the ai agents policy, i. e. contract/flex the muscles
             policy(coords, flexes, timestep)
     loop()
     
@@ -249,7 +249,7 @@ def watch_simulation(device, coords, bones, bones_indices, muscles, flexes, musc
 # The policy of the reinforcement learning agent. The current policy is just a random dummy policy for demonstration purposes. Here is where you want to start coding.
 def policy(coords, flexes, timestep):
     for flex in flexes:
-        if np.random.uniform() < world.RANDOM_TENSION_CHANGE * timestep: # check if the muscle state (i. e. flexed or tensed) gets changed at all
+        if np.random.uniform() < world.RANDOM_TENSION_CHANGE * timestep: # check if the muscle state (i. e. flexed or contracted) gets changed at all
             if np.random.uniform() < world.RANDOM_CHANGE_TO_TENSION: # check to which state it gets changed
                 flex[0]=0 # change to 0% flex 
                 flex[1]=1 # and 100% tension
