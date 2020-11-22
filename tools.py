@@ -248,9 +248,11 @@ def watch_simulation(device, coords, bones, bones_indices, muscles, flexes, musc
     
 # The policy of the reinforcement learning agent. The current policy is just a random dummy policy for demonstration purposes. Here is where you want to start coding.
 def policy(coords, flexes, timestep):
+    RANDOM_TENSION_CHANGE = 0.5
+    RANDOM_CHANGE_TO_TENSION = 0.0
     for flex in flexes:
-        if np.random.uniform() < world.RANDOM_TENSION_CHANGE * timestep: # check if the muscle state (i. e. flexed or contracted) gets changed at all
-            if np.random.uniform() < world.RANDOM_CHANGE_TO_TENSION: # check to which state it gets changed
+        if np.random.uniform() < RANDOM_TENSION_CHANGE * timestep: # check if the muscle state (i. e. flexed or contracted) gets changed at all
+            if np.random.uniform() < RANDOM_CHANGE_TO_TENSION: # check to which state it gets changed
                 flex[0]=0 # change to 0% flex 
                 flex[1]=1 # and 100% tension
             else:
